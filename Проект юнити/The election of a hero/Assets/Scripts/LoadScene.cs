@@ -11,6 +11,13 @@ public class LoadScene : MonoBehaviour {
         
         // NextScene = "Cat_2";
     }
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            LoadifMenu();
+        }
+    }
     public void LoadifDead()
     {
         Debug.Log("LOAD");
@@ -34,6 +41,10 @@ public class LoadScene : MonoBehaviour {
     public void TimeStrop()
     {
         Time.timeScale = 0;
+    }
+    public void TimePlay()
+    {
+        Time.timeScale = 1;
     }
 
 }

@@ -6,18 +6,19 @@ public class PlayerScript : MonoBehaviour {
 
     public GameObject GameOver;
     [SerializeField]
-    private int lives = 3;
+    private int lives = 5;
     public LivesBarL livesbar;
     public int Lives
     {
         get { return lives; }
         set
         {
-            if (value < 3) lives = value;
+            if (value < 5) lives = value;
             livesbar.Refresh();
             Debug.Log("Refresh");
         }
     }
+    public AudioSource Menu;
 
     //private LoadScene ls;
     // PauseS ps1;
@@ -60,61 +61,71 @@ public class PlayerScript : MonoBehaviour {
     }
     private void FixedUpdate()
     {
-        CheckGround();
+        if (!De)
+        {
+            CheckGround();
 
-        if (!block && Input.GetButton("Horizontal")) Run();
-        
+            if (!block && Input.GetButton("Horizontal")) Run();
+        }
     }
     private bool block = false;
     private bool atack = false;
+    private bool De = false;
     private void Update()
     {
-        if (Input.GetButton("Fire2"))
+        if (!De)
         {
-            Block();
-            block = true;
-        }
-        else block = false;
-        if (!block)
-        {
-            if (Input.GetButtonDown("Fire1"))
+
+            if (Input.GetButton("Fire2"))
             {
-                Atack();
-                atack = true;
+                Block();
+                block = true;
             }
-            else atack = false;
-            if (!atack)
-            { 
-                if (isGrounded) State = CharStage.Idle;
-                if (Input.GetButton("Horizontal")) State = CharStage.Run;
-                if (isGrounded && Input.GetButtonDown("Jump")) Jump();
+            else block = false;
+            if (!block)
+            {
+                if (Input.GetButtonDown("Fire1"))
+                {
+                    Atack();
+                    atack = true;
+                }
+                else atack = false;
+                if (!atack)
+                {
+                    if (isGrounded) State = CharStage.Idle;
+                    if (Input.GetButton("Horizontal")) State = CharStage.Run;
+                    if (isGrounded && Input.GetButtonDown("Jump")) Jump();
+                }
+
             }
-          
         }
     }
-    void HitDelay()
-    {
-        checkHitDelay = 1;
-        InvokeRepeating("RemoveHitDelay", 2, 0);
-    }
+    //void HitDelay()
+    //{
+    //    checkHitDelay = 1;
+    //    InvokeRepeating("RemoveHitDelay", 2, 0);
+    //}
 
-    void RemoveHitDelay()
-    {
-        checkHitDelay = 0;
-    }
+    //void RemoveHitDelay()
+    //{
+    //    checkHitDelay = 0;
+    //}
 
-    public void isForce(Vector3 poz)
-    {
-        rigidbody.velocity = Vector3.zero;
-        Vector3 dir = (transform.position - poz);
-        rigidbody.AddForce(dir.normalized * ForceValue * 2.5F, ForceMode2D.Impulse);
-    }
+    //public void isForce(Vector3 poz)
+    //{
+    //    rigidbody.velocity = Vector3.zero;
+    //    Vector3 dir = (transform.position - poz);
+    //    rigidbody.AddForce(dir.normalized * ForceValue * 2.5F, ForceMode2D.Impulse);
+    //}
 
     public void Atack()
     {
-        Vector3 at = new Vector3(0.7F, 0.5F, 0);
         State = CharStage.Atack;
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position+ at, 0.1F);
+    }
+    public void AtackR()
+    {
+        Vector3 at = new Vector3(0.7F, 0.5F, 0);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position + at, 0.3F);
         foreach (Collider2D b in colliders)
         {
             EnemyL en = FindObjectOfType<EnemyL>();
@@ -132,26 +143,27 @@ public class PlayerScript : MonoBehaviour {
 
     public void ReceiweDamage()
     {
-        if (checkHitDelay == 0)
-        {
+
             Lives--;
-            Debug.Log(lives);
+            Debug.Log(lives + " Player");
             Dead();
-            HitDelay();
-        }
+            //HitDelay();
+ 
     }
 
     private void Dead()
     {
         if (Lives == 0)
         {
-            State = CharStage.Dead;      
+            De = true;
+            State = CharStage.Dead;
         }
 
-     }
+    }
     public void Dead1()
     {
         Time.timeScale = 0;
+        Menu.Stop();
         GameOver.SetActive(true);
     }
 

@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class EnemyL : MonoBehaviour {
 
-    
-    public GameObject Win;
-    public LoadScene ls;
-    [SerializeField]
+    public float hard = 2.0F; 
+    public Transform targerP;  //Цель - игрок
+    public GameObject Win;     //Панель при победе
+    public AudioSource Menu;
+    //public LoadScene ls;
+    //[SerializeField]
     private int lives = 5;
+    
     public LivesBarE livesbar;
     public int Lives_b
     {
@@ -21,15 +24,16 @@ public class EnemyL : MonoBehaviour {
             Debug.Log(lives);
         }
     }
-
+    public bool De = false;
+    private int N = 1;
     //private LoadScene ls;
     // PauseS ps1;
-    [SerializeField]
-    private float ForceValue = 8.0f;
     //[SerializeField]
-    public float speed = 3F;
+    // private float ForceValue = 8.0f;
+    //[SerializeField]
+    public float speed = 0.2F;  //Скорость врага
     [SerializeField]
-    private float jumpForce = 15.0F;
+    private float jumpForce = 15.0F; //Сила прыжка 
 
     private bool isGrounded = false;
 
@@ -54,46 +58,78 @@ public class EnemyL : MonoBehaviour {
     }
     private void Start()
     {
+
         //ls = new LoadScene();
         livesbar = new LivesBarE();
         livesbar = FindObjectOfType<LivesBarE>();
-        checkHitDelay = 0;
-
+        //checkHitDelay = 0;
+        targerP = FindObjectOfType<PlayerScript>().transform;
         //  ps1 = new PauseS();
+        
+
+       
     }
     private void FixedUpdate()
     {
-
+        if (State == CharStage.Run) Run();
+        direction = Mathf.Abs(targerP.position.x - transform.position.x);
+        // Debug.Log(direction);
+        if (!De)
+        {
+            if (direction < 2.0F && direction > 1.2F)
+            {
+                N = -1;
+                speed = 2.0F;
+                State = CharStage.Run;
+            }
+            if (direction <= 1.2F)
+            {
+                tm += Time.deltaTime;
+                Debug.Log(tm);
+                speed = 0;
+                if (tm > hard)
+                {
+                    tm = 0;
+                    Atack();
+                }
+                else State = CharStage.Idle;
+            }
+        }
     }
     private bool block = false;
     private bool atack = false;
+    private float direction;
+    private float tm;
     private void Update()
     {
-       
+     
     }
-    void HitDelay()
-    {
-        checkHitDelay = 1;
-        InvokeRepeating("RemoveHitDelay", 2, 0);
-    }
+    //void HitDelay()
+    //{
+    //    checkHitDelay = 1;
+    //    InvokeRepeating("RemoveHitDelay", 2, 0);
+    //}
 
-    void RemoveHitDelay()
-    {
-        checkHitDelay = 0;
-    }
+    //void RemoveHitDelay()
+    //{
+    //    checkHitDelay = 0;
+    //}
 
-    public void isForce(Vector3 poz)
-    {
-        rigidbody.velocity = Vector3.zero;
-        Vector3 dir = (transform.position - poz);
-        rigidbody.AddForce(dir.normalized * ForceValue * 2.5F, ForceMode2D.Impulse);
-    }
+    //public void isForce(Vector3 poz)
+    //{
+    //    rigidbody.velocity = Vector3.zero;
+    //    Vector3 dir = (transform.position - poz);
+    //    rigidbody.AddForce(dir.normalized * ForceValue * 2.5F, ForceMode2D.Impulse);
+    //}
 
     public void Atack()
     {
-        Vector3 at = new Vector3(0.7F, 0.5F, 0);
         State = CharStage.Atack;
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position - at, 0.1F);
+    }
+    public void AtackR()
+    {
+        Vector3 at = new Vector3(0.7F, 0.5F, 0);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position - at, 0.2F);
         foreach (Collider2D b in colliders)
         {
             PlayerScript en = FindObjectOfType<PlayerScript>();
@@ -111,51 +147,34 @@ public class EnemyL : MonoBehaviour {
 
     public void ReceiweDamage1()
     {
-        if (checkHitDelay == 0)
-        {
             Lives_b--;
             Debug.Log(lives);
             Dead();
-            HitDelay();
-        }
     }
 
     private void Dead()
     {
         if (Lives_b == 0)
         {
+            De = true;
             State = CharStage.Dead;
-          
-            
         }
 
     }
     private void Dead1()
     {
- 
-            Time.timeScale = 0;
-            Win.SetActive(true);
-
-
+        Time.timeScale = 0;
+        Menu.Stop();
+        Win.SetActive(true);
+            
     }
-
     private void Run()
     {
-
-
-        //float h = Input.GetAxisRaw("Horizontal");
-
-
-        // Vector2 tempVect = new Vector2(h,0);
-        //tempVect = tempVect.normalized * transform.right* speed * Time.fixedDeltaTime;
-        //rigidbody.MovePosition((Vector2)transform.position + tempVect);
-        Vector3 direction = transform.right * Input.GetAxis("Horizontal");
+        Vector3 direction = transform.right * N;
         transform.Translate(direction.x * speed * Time.deltaTime, 0, 0);
         // transform.position = Vector3.Lerp(transform.position, transform.position + direction, speed * Time.deltaTime);
 
         sprite.flipX = direction.x < 0.0F;
-        // sprite.flipX = tempVect.x < 0.0F;
-
     }
 
     private void Jump()
