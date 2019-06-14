@@ -21,8 +21,8 @@ GameObject:
   - component: {fileID: 4813914901907902}
   - component: {fileID: 50486790851605334}
   - component: {fileID: 61704829072573900}
-  - component: {fileID: 95560402697796498}
-  - component: {fileID: 114364866912481638}
+  - component: {fileID: 95063241001515286}
+  - component: {fileID: 114366880249540362}
   m_Layer: 0
   m_Name: Eemy
   m_TagString: Untagged
@@ -53,7 +53,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1102705909252518}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.5, y: -2.5, z: 0}
+  m_LocalPosition: {x: 4.5, y: -2.53, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4926533342742664}
@@ -67,7 +67,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1909947392577248}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.021, y: 0.471, z: 0}
+  m_LocalPosition: {x: 0, y: 0.53, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4813914901907902}
@@ -118,7 +118,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.52481794, y: 0.89827895}
   m_EdgeRadius: 0
---- !u!95 &95560402697796498
+--- !u!95 &95063241001515286
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 1
@@ -136,7 +136,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &114364866912481638
+--- !u!114 &114366880249540362
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -147,13 +147,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d215aae8b5c77e49bfb601ccf2b7c05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hard: 1
   targerP: {fileID: 0}
   Win: {fileID: 0}
   Menu: {fileID: 0}
   livesbar: {fileID: 0}
   De: 0
-  speed: 5
+  speed: 10
   jumpForce: 15
 --- !u!212 &212441238554049768
 SpriteRenderer:

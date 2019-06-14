@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class EnemyL : MonoBehaviour {
 
-    public float hard = 2.0F; 
+    
+    public  float hard = 2.0F;
+    private float tm;
     public Transform targerP;  //Цель - игрок
     public GameObject Win;     //Панель при победе
     public AudioSource Menu;
@@ -35,7 +37,7 @@ public class EnemyL : MonoBehaviour {
     [SerializeField]
     private float jumpForce = 15.0F; //Сила прыжка 
 
-    private bool isGrounded = false;
+    //private bool isGrounded = false;
 
     private CharStage State
     {
@@ -58,7 +60,7 @@ public class EnemyL : MonoBehaviour {
     }
     private void Start()
     {
-
+        tm = hard;
         //ls = new LoadScene();
         livesbar = new LivesBarE();
         livesbar = FindObjectOfType<LivesBarE>();
@@ -71,38 +73,70 @@ public class EnemyL : MonoBehaviour {
     }
     private void FixedUpdate()
     {
-        if (State == CharStage.Run) Run();
-        direction = Mathf.Abs(targerP.position.x - transform.position.x);
-        // Debug.Log(direction);
         if (!De)
         {
-            if (direction < 2.0F && direction > 1.2F)
-            {
-                N = -1;
-                speed = 2.0F;
-                State = CharStage.Run;
-            }
-            if (direction <= 1.2F)
-            {
-                tm += Time.deltaTime;
-                Debug.Log(tm);
-                speed = 0;
-                if (tm > hard)
+            if (!block)
+            { 
+              if (State == CharStage.Run) Run();
+              direction = Mathf.Abs(targerP.position.x - transform.position.x);
+              // Debug.Log(direction);
+
+                if (direction < 5.0F && direction > 1.2F)
                 {
-                    tm = 0;
-                    Atack();
+                   N = -1;
+                    speed = 2.0F;
+                    State = CharStage.Run;
                 }
-                else State = CharStage.Idle;
+                if (direction <= 1.2F)
+                {
+                    tm += Time.deltaTime;
+                    Debug.Log("tm"+tm);
+                    speed = 0;
+                    if (tm > hard)
+                    {
+                        tm = 0;
+                        Atack();
+                    }
+                    else State = CharStage.Idle;
+                }
             }
         }
     }
     private bool block = false;
-    private bool atack = false;
+    //private bool atack = false;
     private float direction;
-    private float tm;
+    private float tm2 = 0;
+    private float tm3 = 7;
     private void Update()
     {
-     
+        if (!De)
+        {
+            if (Lives_b < 4)
+            {
+                if (tm3 > 6)
+                {
+
+                    if (tm2 <= 3)
+                    {
+                        Debug.Log("BlockE_true");
+                        Debug.Log("tm2" + tm2);
+                        tm2 += Time.deltaTime;
+                        Block();
+                        block = true;
+                    }
+                    else
+                    {
+                        Debug.Log("BlockE_false");
+                        Debug.Log("tm2" + tm2);
+                        block = false;
+                        tm3 = 0;
+                        tm2 = 0;
+                    }
+                }
+                else tm3 += Time.deltaTime;
+            }
+            else block = false;
+        }
     }
     //void HitDelay()
     //{
@@ -147,9 +181,12 @@ public class EnemyL : MonoBehaviour {
 
     public void ReceiweDamage1()
     {
+        if (!block)
+        {
             Lives_b--;
             Debug.Log(lives);
             Dead();
+        }
     }
 
     private void Dead()
@@ -183,13 +220,13 @@ public class EnemyL : MonoBehaviour {
         State = CharStage.Jump;
     }
 
-    private void CheckGround()
-    {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.1F);
+    //private void CheckGround()
+    //{
+    //    Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.1F);
 
-        isGrounded = colliders.Length > 1;
+    //   // isGrounded = colliders.Length > 1;
 
-    }
+    //}
 }
 public enum CharStage1
 {

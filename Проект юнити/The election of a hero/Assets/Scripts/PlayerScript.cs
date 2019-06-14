@@ -22,8 +22,8 @@ public class PlayerScript : MonoBehaviour {
 
     //private LoadScene ls;
     // PauseS ps1;
-    [SerializeField]
-    private float ForceValue = 8.0f;
+    //[SerializeField]
+    //private float ForceValue = 8.0f;
     //[SerializeField]
     public float speed = 3F;
     [SerializeField]
@@ -40,7 +40,7 @@ public class PlayerScript : MonoBehaviour {
     new private Rigidbody2D rigidbody;
     private Animator animator;
     private SpriteRenderer sprite;
-    private int checkHitDelay;
+    //private int checkHitDelay;
 
     private void Awake()
     {
@@ -55,7 +55,7 @@ public class PlayerScript : MonoBehaviour {
         //ls = new LoadScene();
         livesbar = new LivesBarL();
         livesbar = FindObjectOfType<LivesBarL>();
-        checkHitDelay = 0;
+       // checkHitDelay = 0;
 
         //  ps1 = new PauseS();
     }
@@ -143,12 +143,16 @@ public class PlayerScript : MonoBehaviour {
 
     public void ReceiweDamage()
     {
+        if (!block)
+        {
 
+        
             Lives--;
             Debug.Log(lives + " Player");
             Dead();
             //HitDelay();
- 
+        }
+
     }
 
     private void Dead()
